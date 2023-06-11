@@ -28,20 +28,14 @@ class PesananController extends Controller
     // }
 
     public function index(Request $request)
-    {
-        // $client = new Client();
-        // $response = $client->request('GET', 'http://127.0.0.1:8001/api/pemesanan');
-    
-        // $data = json_decode($response->getBody(), true);
+{
+    $response = Http::get('http://127.0.0.1:8001/api/pemesanan');
+    $responseData = json_decode($response->body());
 
-        $response = Http::get('http://127.0.0.1:8001/api/pemesanan');
-        $data = json_decode($response->body());
-        $data = $request->all();
-
-    
+    if ($response->status() === 200) {
         // Simpan data ke database
-        foreach ($data as $item) {
-            $data = Pesanan::create([
+        foreach ($responseData->data as $item) {
+            Pesanan::create([
                 'id_order' => $item->id_order,
                 'nama_barang' => $item->nama_barang,
                 'alamat_penerima' => $item->alamat_penerima,
@@ -49,7 +43,12 @@ class PesananController extends Controller
                 'berat_barang' => $item->berat_barang
             ]);
         }
-        return ApiFormatter::createApi(200, 'Permintaan berhasil, data pesanan berhasil ditampilkan', $data);
+
+        return ApiFormatter::createApi(200, 'Permintaan berhasil, data pesanan berhasil ditampilkan', $responseData->data);
+    } else {
+        return ApiFormatter::createApi(400, 'Gagal mengambil data dari API');
+    }
+
 
     
         // if ($data) {

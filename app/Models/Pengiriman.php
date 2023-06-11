@@ -10,7 +10,7 @@ class Pengiriman extends Model
     use HasFactory;
     protected $table = 'pengiriman';
     protected $primaryKey = 'no_resi';
-    public $timestamps = true;
+    public $timestamps = false;
 
     protected $fillable = [
         'id_order',

@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('pengiriman', function (Blueprint $table) {
             $table->increments('no_resi');
-            $table->unsignedInteger('id_order');
-            $table->string('alamat_penerima');
-            $table->string('jenis_pengiriman');
+            $table->integer('id_order'); //dari sales
+            $table->string('alamat_penerima')->nullable()->default(null);
+            $table->string('jenis_pengiriman')->nullable()->default(null);
             $table->date('jadwal_pengiriman')->nullable()->default(null);
             $table->integer('estimasi_waktu')->nullable()->default(null);
             $table->string('status')->nullable()->default(null);
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('konfirmasi_pengiriman')->nullable()->default(null);
             $table->timestamps();
     
-            $table->foreign('id_order')->references('id_order')->on('pesanan');
+
                 });
     }
 

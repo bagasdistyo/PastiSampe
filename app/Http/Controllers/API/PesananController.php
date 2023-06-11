@@ -7,18 +7,51 @@ use App\Helpers\ApiFormatter;
 use App\Models\Pesanan;
 use Exception;
 use Illuminate\Http\Request;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
 
 class PesananController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $pesanan = Pesanan::all();
+    // public function index()
+    // {
+    //     $pesanan = Pesanan::all();
 
-        if ($pesanan) {
-            return ApiFormatter::createApi(200, 'Permintaan berhasil, data pesanan berhasil ditampilkan', $pesanan);
+    //     if ($pesanan) {
+    //         return ApiFormatter::createApi(200, 'Permintaan berhasil, data pesanan berhasil ditampilkan', $pesanan);
+    //     } else {
+    //         return ApiFormatter::createApi(400, 'Failed');
+    //     }
+        
+    // }
+
+    public function index(Request $request)
+    {
+        // $client = new Client();
+        // $response = $client->request('GET', 'http://127.0.0.1:8001/api/pemesanan');
+    
+        // $data = json_decode($response->getBody(), true);
+
+        $response = Http::get('http://127.0.0.1:8001/api/pemesanan');
+        $data = json_decode($response->body());
+        $data = $request->all();
+
+    
+        // Simpan data ke database
+        foreach ($data as $item) {
+            $data = Pesanan::create([
+                'id_order' => $item->id_order,
+                'nama_barang' => $item->nama_barang,
+                'alamat_penerima' => $item->alamat_penerima,
+                'jenis_pengiriman' => $item->jenis_pengiriman,
+                'berat_barang' => $item->berat_barang
+            ]);
+        }
+    
+        if ($data) {
+            return ApiFormatter::createApi(200, 'Permintaan berhasil, data pesanan berhasil ditampilkan', $data);
         } else {
             return ApiFormatter::createApi(400, 'Failed');
         }

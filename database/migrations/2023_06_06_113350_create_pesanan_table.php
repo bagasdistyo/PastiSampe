@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pesanan', function (Blueprint $table) {
-            $table->increments('id_order'); //dari sales
-            $table->integer('id_customer'); //dari sales
+            $table->increments('id_ongkir');
+            $table->integer('id_order'); //dari sales
             $table->string('nama_barang'); //dari sales
             $table->string('alamat_penerima'); //dari sales
             $table->string('jenis_pengiriman'); //dari sales

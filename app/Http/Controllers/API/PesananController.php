@@ -49,12 +49,14 @@ class PesananController extends Controller
                 'berat_barang' => $item->berat_barang
             ]);
         }
+        return ApiFormatter::createApi(200, 'Permintaan berhasil, data pesanan berhasil ditampilkan', $data);
+
     
-        if ($data) {
-            return ApiFormatter::createApi(200, 'Permintaan berhasil, data pesanan berhasil ditampilkan', $data);
-        } else {
-            return ApiFormatter::createApi(400, 'Failed');
-        }
+        // if ($data) {
+        //     return ApiFormatter::createApi(200, 'Permintaan berhasil, data pesanan berhasil ditampilkan', $data);
+        // } else {
+        //     return ApiFormatter::createApi(400, 'Failed');
+        // }
     }
 
     /**

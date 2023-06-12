@@ -9,6 +9,9 @@ use App\Models\Pengiriman;
 use Exception;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
+
 
 class PengirimanController extends Controller
 {
@@ -43,59 +46,42 @@ class PengirimanController extends Controller
             return ApiFormatter::createApi(400, 'Gagal mengambil data dari API');
         }
     }
-    // public function index()
-    // {
-    //     $pengiriman = Pengiriman::all();
 
-    //     if ($pengiriman) {
-    //         return ApiFormatter::createApi(200, 'Permintaan berhasil, data pengiriman berhasil ditampilkan', $pengiriman);
-    //     } else {
-    //         return ApiFormatter::createApi(400, 'Failed');
-    //     }
-    // }
+    public function data_pengiriman()
+    {
+        $pengiriman = Pengiriman::all();
+
+        if ($pengiriman) {
+            return ApiFormatter::createApi(200, 'Permintaan berhasil, data pengiriman berhasil ditampilkan', $pengiriman);
+        } else {
+            return ApiFormatter::createApi(400, 'Failed');
+        }
+    }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function jadwal(Request $request)
+    public function jadwal(Request $request, $no_resi)
     {
+        $pengiriman = Pengiriman::all();
         try {
-            $request->validate([
-                'no_resi' => 'required',
-                'id_order' => 'required',
-                'alamat_penerima' => 'required',
-                'jenis_pengiriman' => 'required',
-            ]);
-    
+            
             $jadwal_pengiriman = Carbon::today()->addDays(rand(1, 7))->toDateString();
-    
-            $pengiriman = Pengiriman::create([
-                'no_resi' => $request->no_resi,
-                'id_order' => $request->id_order,
-                'alamat_penerima' => $request->alamat_penerima,
-                'jenis_pengiriman' => $request->jenis_pengiriman,
-                'jadwal_pengiriman' => $jadwal_pengiriman,
-    
-            ]);
+            $pengiriman = Pengiriman::where('no_resi', $no_resi)->first();
     
             if ($pengiriman) {
-                $pengirimanData = $pengiriman->toArray();
-                $data = [
-                    'no_resi' => $pengirimanData['no_resi'],
-                    'id_order' => $pengirimanData['id_order'],
-                    'alamat_penerima' => $pengirimanData['alamat_penerima'],
-                    'jenis_pengiriman' => $pengirimanData['jenis_pengiriman'],
-                    'jadwal_pengiriman' => $pengirimanData['jadwal_pengiriman'],
-                ];
-                return ApiFormatter::createApi(200, 'Permintaan berhasil, nomor resi dan informasi penjadwalan
-                berhasil dikirimkan.', $data);
-            } else {    
-                return ApiFormatter::createApi(400, 'Permintaan berhasil, nomor resi dan informasi penjadwalan
-                berhasil dikirimkan.');
+                $pengiriman->update([
+                    'jadwal_pengiriman' => $jadwal_pengiriman,
+                ]);
+                return ApiFormatter::createApi(200, 'Permintaan berhasil, informasi pengiriman dikirimkan', $pengiriman);
+            } else {
+                return ApiFormatter::createApi(400, 'Permintaan tidak valid, data yang diberikan tidak lengkap');
             }
         } catch (Exception $error) {
             return ApiFormatter::createApi(400, $error->getMessage());
         }
+
+
     }
 
     /**
@@ -107,6 +93,8 @@ class PengirimanController extends Controller
             $request->validate([
                 'status' => 'required',
                 'estimasi_waktu' => 'required',
+                'lokasi' => 'required',
+                'konfirmasi_pengiriman' => 'required',
             ]);
     
             $pengiriman = Pengiriman::where('no_resi', $no_resi)->first();
@@ -118,18 +106,8 @@ class PengirimanController extends Controller
                     'lokasi' => $request->lokasi,
                     'konfirmasi_pengiriman' => $request->konfirmasi_pengiriman,
                 ]);
-    
-                $pengirimanData = $pengiriman->toArray();
-                $data = [
-                    'no_resi' => $pengirimanData['no_resi'],
-                    'id_order' => $pengirimanData['id_order'],
-                    'jadwal_pengiriman' => $pengirimanData['jadwal_pengiriman'],
-                    'status' => $pengirimanData['status'],
-                    'estimasi_waktu' => $pengirimanData['estimasi_waktu'],
-                    'lokasi' => $pengirimanData['lokasi'],
-                    'konfirmasi_pengiriman' => $pengirimanData['konfirmasi_pengiriman'],
-                ];
-                return ApiFormatter::createApi(200, 'Permintaan berhasil, informasi pengiriman dikirimkan', $data);
+
+                return ApiFormatter::createApi(200, 'Permintaan berhasil, informasi pengiriman dikirimkan', $pengiriman);
             } else {
                 return ApiFormatter::createApi(400, 'Permintaan tidak valid, data yang diberikan tidak lengkap');
             }

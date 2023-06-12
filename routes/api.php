@@ -25,11 +25,14 @@ Route::get('pesanan/data_pesanan', [PesananController::class, 'data_pesanan']);
 // Route untuk mengirim harga ongkir
 Route::post('pesanan/ongkir/{id_order}', [PesananController::class, 'ongkir']);
 
-// Route untuk menampilkan seluruh data pengiriman
+// Route untuk mengambil dan menyimpan data pesanan dari API Sales
 Route::get('pengiriman', [PengirimanController::class, 'index']);
 
+// Route untuk menampilkan seluruh data pengiriman
+Route::get('pengiriman/data_pengiriman', [PengirimanController::class, 'data_pengiriman']);
+
 // Route untuk mengirimkan jadwal pengiriman dan nomor resi
-Route::post('pengiriman/jadwal', [PengirimanController::class, 'jadwal']);
+Route::post('pengiriman/jadwal/{no_resi}', [PengirimanController::class, 'jadwal']);
 
 // Route untuk update data pengiriman untuk mengubah status, estimasi_waktu, lokasi, dan konfirmasi pengiriman
 Route::post('pengiriman/kirim/{no_resi}', [PengirimanController::class, 'kirim']);

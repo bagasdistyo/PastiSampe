@@ -83,32 +83,6 @@ class PesananController extends Controller
     public function ongkir(Request $request, $id_order)
     {
         $pesanan = Pesanan::all();
-        // try {
-        //     $request->validate([
-        //         'id_order' => 'required',
-        //     ]);
-
-        //     $harga_ongkir = rand(5000, 25000);
-        //     $pesanan = Pesanan::create([
-        //         'id_order' => $request->id_order,
-        //         'nama_barang' => $nama_barang,
-        //         'alamat_penerima' => $alamat_penerima,
-        //         'jenis_pengiriman' => $jenis_pengiriman,
-        //         'berat_barang' => $berat_barang,
-        //         'harga_ongkir' => $harga_ongkir,
-
-        //     ]);
-
-        //     $pesanan = Pesanan::where('id_order', $request->id_order)->first();
-
-        //     if ($pesanan) {
-        //         return ApiFormatter::createApi(200, '“Permintaan berhasil, Estimasi harga ongkir berhasil dikirim', $pesanan);
-        //     } else {    
-        //         return ApiFormatter::createApi(400, 'Permintaan tidak valid, data yang diberikan tidak lengkap');
-        //     }
-        // } catch (Exception $error) {
-        //     return ApiFormatter::createApi(400, $error->getMessage());
-        // }
         try {
             $request->validate([
                 'harga_ongkir' => 'required',

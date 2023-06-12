@@ -15,16 +15,44 @@ class PengirimanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $pengiriman = Pengiriman::all();
 
-        if ($pengiriman) {
-            return ApiFormatter::createApi(200, 'Permintaan berhasil, data pengiriman berhasil ditampilkan', $pengiriman);
+
+    public function index(Request $request)
+    {
+        $response = Http::get('http://127.0.0.1:8001/api/pemesanan');
+        $responseData = json_decode($response->body());
+    
+        if ($response->status() === 200) {
+            $savedData = [];
+            foreach ($responseData->data as $item) {
+                // Periksa apakah id_order sudah ada di database
+                $existingData = Pengiriman::where('id_order', $item->id_order)->first();
+                if (!$existingData) {
+                    // Jika id_order tidak ada, simpan ke database
+                    $data = Pengiriman::create([
+                        'id_order' => $item->id_order,
+                        'alamat_penerima' => $item->alamat_penerima,
+                        'jenis_pengiriman' => $item->jenis_pengiriman,
+                    ]);
+                    $savedData[] = $data;
+                }
+            }
+    
+            return ApiFormatter::createApi(200, 'Permintaan berhasil, data pesanan berhasil ditampilkan', $responseData);
         } else {
-            return ApiFormatter::createApi(400, 'Failed');
+            return ApiFormatter::createApi(400, 'Gagal mengambil data dari API');
         }
     }
+    // public function index()
+    // {
+    //     $pengiriman = Pengiriman::all();
+
+    //     if ($pengiriman) {
+    //         return ApiFormatter::createApi(200, 'Permintaan berhasil, data pengiriman berhasil ditampilkan', $pengiriman);
+    //     } else {
+    //         return ApiFormatter::createApi(400, 'Failed');
+    //     }
+    // }
 
     /**
      * Show the form for creating a new resource.

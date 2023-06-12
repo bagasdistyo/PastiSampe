@@ -16,11 +16,14 @@ use App\Http\Controllers\API\KomplainController;
 |
 */
 
-// Route untuk menampilkan seluruh data pesanan
+// Route untuk mengambil dan menyimpan data pesanan dari API Sales
 Route::get('pesanan', [PesananController::class, 'index']);
 
+// Route untuk menampilkan seluruh data pesanan
+Route::get('pesanan/data_pesanan', [PesananController::class, 'data_pesanan']);
+
 // Route untuk mengirim harga ongkir
-Route::post('pesanan/ongkir', [PesananController::class, 'ongkir']);
+Route::post('pesanan/ongkir/{id_order}', [PesananController::class, 'ongkir']);
 
 // Route untuk menampilkan seluruh data pengiriman
 Route::get('pengiriman', [PengirimanController::class, 'index']);

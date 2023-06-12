@@ -11,7 +11,6 @@ class Pesanan extends Model
     use HasFactory;
     protected $fillable = [
         'id_order',
-        'id_customer',
         'nama_barang',
         'alamat_penerima',
         'jenis_pengiriman',

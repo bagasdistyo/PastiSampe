@@ -14,6 +14,7 @@ class Komplain extends Model
 
     protected $fillable = [
         'no_resi',
+        'nama_barang',
         'tanggal_komplain',
         'deskripsi_komplain',
         'status_komplain',

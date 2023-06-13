@@ -60,7 +60,7 @@ class PengirimanController extends Controller
         if ($pengiriman) {
             return ApiFormatter::createApi(200, 'Permintaan berhasil, data pengiriman berhasil ditampilkan', $pengiriman);
         } else {
-            return ApiFormatter::createApi(400, 'Failed');
+            return ApiFormatter::createApi(400, 'Permintaan Gagal');
         }
     }
 

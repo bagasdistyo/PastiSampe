@@ -16,6 +16,8 @@ use App\Http\Controllers\API\KomplainController;
 |
 */
 
+//Pesanan
+// =================================================================================================
 // Route untuk mengambil dan menyimpan data pesanan dari API Sales
 Route::get('pesanan', [PesananController::class, 'index']);
 
@@ -24,7 +26,10 @@ Route::get('pesanan/data_pesanan', [PesananController::class, 'data_pesanan']);
 
 // Route untuk mengirim harga ongkir
 Route::post('pesanan/ongkir/{id_order}', [PesananController::class, 'ongkir']);
+// =================================================================================================
 
+//Pengiriman
+// =================================================================================================
 // Route untuk mengambil dan menyimpan data pesanan dari API Sales
 Route::get('pengiriman', [PengirimanController::class, 'index']);
 
@@ -39,12 +44,16 @@ Route::post('pengiriman/kirim/{no_resi}', [PengirimanController::class, 'kirim']
 
 // Route untuk melacak lokasi paket berdasarkan nomor resi
 Route::get('pengiriman/lacak/{no_resi}', [PengirimanController::class, 'lacak']);
+// =================================================================================================
 
+//Komplain
+// =================================================================================================
 // Route untuk menampilkan seluruh data komplain
 Route::get('komplain', [KomplainController::class, 'index']);
 
 // Route untuk mengirim data komplain
 Route::post('komplain/pengembalian', [KomplainController::class, 'pengembalian']);
+// =================================================================================================
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

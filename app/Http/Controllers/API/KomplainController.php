@@ -46,6 +46,7 @@ class KomplainController extends Controller
         try {
             $request->validate([
                 'no_resi' => 'required',
+                'nama_barang' => 'required',
                 'tanggal_komplain' => 'required',
                 'deskripsi_komplain' => 'required',
                 'status_komplain' => 'required',
@@ -54,6 +55,7 @@ class KomplainController extends Controller
             $komplain = Komplain::create([
                 'id_komplain' => $request->id_komplain,
                 'no_resi' => $request->no_resi,
+                'nama_barang' => $request->nama_barang,
                 'tanggal_komplain' => $request->tanggal_komplain,
                 'deskripsi_komplain' => $request->deskripsi_komplain,
                 'status_komplain' => $request->status_komplain,
@@ -63,6 +65,7 @@ class KomplainController extends Controller
                 $response = [
                     'id_komplain' => $komplain->id_komplain,
                     'no_resi' => $komplain->no_resi,
+                    'nama_barang' => $komplain->nama_barang,
                     'tanggal_komplain' => $komplain->tanggal_komplain,
                     'deskripsi_komplain' => $komplain->deskripsi_komplain,
                     'status_komplain' => $komplain->status_komplain,

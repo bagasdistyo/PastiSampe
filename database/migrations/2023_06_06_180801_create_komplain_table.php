@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('komplain', function (Blueprint $table) {
             $table->increments('id_komplain');
             $table->unsignedInteger('no_resi');
+            $table->string('nama_barang');
             $table->date('tanggal_komplain');
             $table->text('deskripsi_komplain');
             $table->string('status_komplain');

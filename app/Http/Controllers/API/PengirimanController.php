@@ -20,32 +20,38 @@ class PengirimanController extends Controller
      */
 
 
-    public function index(Request $request)
-    {
-        $response = Http::get('http://127.0.0.1:8001/api/pemesanan');
-        $responseData = json_decode($response->body());
-    
-        if ($response->status() === 200) {
-            $savedData = [];
-            foreach ($responseData->data as $item) {
-                // Periksa apakah id_order sudah ada di database
-                $existingData = Pengiriman::where('id_order', $item->id_order)->first();
-                if (!$existingData) {
-                    // Jika id_order tidak ada, simpan ke database
-                    $data = Pengiriman::create([
-                        'id_order' => $item->id_order,
-                        'alamat_penerima' => $item->alamat_penerima,
-                        'jenis_pengiriman' => $item->jenis_pengiriman,
-                    ]);
-                    $savedData[] = $data;
-                }
-            }
-    
-            return ApiFormatter::createApi(200, 'Permintaan berhasil, data pesanan berhasil ditampilkan', $responseData);
-        } else {
-            return ApiFormatter::createApi(400, 'Gagal mengambil data dari API');
-        }
-    }
+     public function index(Request $request)
+     {
+         $response = Http::get('http://127.0.0.1:8001/api/pemesanan');
+         $responseData = json_decode($response->body());
+     
+         if ($response->status() === 200) {
+             // Check if the data array is empty
+             if (empty($responseData->data)) {
+                 return ApiFormatter::createApi(400, 'Data pada API Sales masih kosong');
+             }
+     
+             $savedData = [];
+             foreach ($responseData->data as $item) {
+                 // Periksa apakah id_order sudah ada di database
+                 $existingData = Pengiriman::where('id_order', $item->id_order)->first();
+                 if (!$existingData) {
+                     // Jika id_order tidak ada, simpan ke database
+                     $data = Pengiriman::create([
+                         'id_order' => $item->id_order,
+                         'alamat_penerima' => $item->alamat_penerima,
+                         'jenis_pengiriman' => $item->jenis_pengiriman,
+                     ]);
+                     $savedData[] = $data;
+                 }
+             }
+     
+             return ApiFormatter::createApi(200, 'Permintaan berhasil, data pesanan berhasil disimpan', $responseData);
+         } else {
+             return ApiFormatter::createApi(400, 'Gagal mengambil data dari API');
+         }
+     }
+     
 
     public function data_pengiriman()
     {
@@ -65,13 +71,15 @@ class PengirimanController extends Controller
     {
         $pengiriman = Pengiriman::all();
         try {
+            $request->validate([
+                'jadwal_pengiriman' => 'required',
+            ]);
             
-            $jadwal_pengiriman = Carbon::today()->addDays(rand(1, 7))->toDateString();
             $pengiriman = Pengiriman::where('no_resi', $no_resi)->first();
     
             if ($pengiriman) {
                 $pengiriman->update([
-                    'jadwal_pengiriman' => $jadwal_pengiriman,
+                    'jadwal_pengiriman' => $request->jadwal_pengiriman,
                 ]);
                 return ApiFormatter::createApi(200, 'Permintaan berhasil, informasi pengiriman dikirimkan', $pengiriman);
             } else {

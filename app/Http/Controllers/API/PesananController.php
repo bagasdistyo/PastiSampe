@@ -15,46 +15,40 @@ class PesananController extends Controller
     /**
      * Display a listing of the resource.
      */
-    // public function index()
-    // {
-    //     $pesanan = Pesanan::all();
 
-    //     if ($pesanan) {
-    //         return ApiFormatter::createApi(200, 'Permintaan berhasil, data pesanan berhasil ditampilkan', $pesanan);
-    //     } else {
-    //         return ApiFormatter::createApi(400, 'Failed');
-    //     }
-        
-    // }
-
-    public function index(Request $request)
-    {
-        $response = Http::get('http://127.0.0.1:8001/api/pemesanan');
-        $responseData = json_decode($response->body());
-    
-        if ($response->status() === 200) {
-            $savedData = [];
-            foreach ($responseData->data as $item) {
-                // Periksa apakah id_order sudah ada di database
-                $existingData = Pesanan::where('id_order', $item->id_order)->first();
-                if (!$existingData) {
-                    // Jika id_order tidak ada, simpan ke database
-                    $data = Pesanan::create([
-                        'id_order' => $item->id_order,
-                        'nama_barang' => $item->nama_barang,
-                        'alamat_penerima' => $item->alamat_penerima,
-                        'jenis_pengiriman' => $item->jenis_pengiriman,
-                        'berat_barang' => $item->berat_barang
-                    ]);
-                    $savedData[] = $data;
-                }
-            }
-    
-            return ApiFormatter::createApi(200, 'Permintaan berhasil, data pesanan berhasil ditampilkan', $responseData);
-        } else {
-            return ApiFormatter::createApi(400, 'Gagal mengambil data dari API');
-        }
-    }
+     public function index(Request $request)
+     {
+         $response = Http::get('http://127.0.0.1:8001/api/pemesanan');
+         $responseData = json_decode($response->body());
+     
+         if ($response->status() === 200) {
+             if (!empty($responseData->data)) {
+                 $savedData = [];
+                 foreach ($responseData->data as $item) {
+                     // Periksa apakah id_order sudah ada di database
+                     $existingData = Pesanan::where('id_order', $item->id_order)->first();
+                     if (!$existingData) {
+                         // Jika id_order tidak ada, simpan ke database
+                         $data = Pesanan::create([
+                             'id_order' => $item->id_order,
+                             'nama_barang' => $item->nama_barang,
+                             'alamat_penerima' => $item->alamat_penerima,
+                             'jenis_pengiriman' => $item->jenis_pengiriman,
+                             'berat_barang' => $item->berat_barang
+                         ]);
+                         $savedData[] = $data;
+                     }
+                 }
+     
+                 return ApiFormatter::createApi(200, 'Berhasil menyimpan data dari API Sales', $responseData);
+             } else {
+                 return ApiFormatter::createApi(400, 'Data pada API Sales masih kosong');
+             }
+         } else {
+             return ApiFormatter::createApi(400, 'Gagal menyimpan data dari API');
+         }
+     }
+     
     
 
     public function data_pesanan()
@@ -64,7 +58,7 @@ class PesananController extends Controller
         if ($pesanan) {
             return ApiFormatter::createApi(200, 'Permintaan berhasil, data pesanan berhasil ditampilkan', $pesanan);
         } else {
-            return ApiFormatter::createApi(400, 'Failed');
+            return ApiFormatter::createApi(400, 'Permintaan gagal, data pesanan tidak ditampilkan');
         }
         
     }
@@ -105,7 +99,7 @@ class PesananController extends Controller
                     'berat_barang' => $pesananData['berat_barang'],
                     'harga_ongkir' => $pesananData['harga_ongkir'],
                 ];
-                return ApiFormatter::createApi(200, 'Permintaan berhasil, informasi pengiriman dikirimkan', $data);
+                return ApiFormatter::createApi(200, 'Permintaan berhasil, informasi harga ongkir dikirimkan', $data);
             } else {
                 return ApiFormatter::createApi(400, 'Permintaan tidak valid, data yang diberikan tidak lengkap');
             }

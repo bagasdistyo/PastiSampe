@@ -10,6 +10,8 @@ use App\Models\Komplain;
 use Exception;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
 
 class KomplainController extends Controller
 {
@@ -27,6 +29,7 @@ class KomplainController extends Controller
         }
     }
 
+    
     /**
      * Show the form for creating a new resource.
      */
@@ -42,34 +45,38 @@ class KomplainController extends Controller
     {
         try {
             $request->validate([
-                'id_komplain' => 'required',
                 'no_resi' => 'required',
                 'tanggal_komplain' => 'required',
                 'deskripsi_komplain' => 'required',
                 'status_komplain' => 'required',
             ]);
-
+    
             $komplain = Komplain::create([
                 'id_komplain' => $request->id_komplain,
                 'no_resi' => $request->no_resi,
                 'tanggal_komplain' => $request->tanggal_komplain,
                 'deskripsi_komplain' => $request->deskripsi_komplain,
                 'status_komplain' => $request->status_komplain,
-
             ]);
-
-            $komplain = Komplain::where('id_komplain', $request->id_komplain)->first();
-
+    
             if ($komplain) {
-                return ApiFormatter::createApi(200, 'Permintaan berhasil, pengembalian barang diproses', $komplain);
+                $response = [
+                    'id_komplain' => $komplain->id_komplain,
+                    'no_resi' => $komplain->no_resi,
+                    'tanggal_komplain' => $komplain->tanggal_komplain,
+                    'deskripsi_komplain' => $komplain->deskripsi_komplain,
+                    'status_komplain' => $komplain->status_komplain,
+                ];
+    
+                return ApiFormatter::createApi(200, 'Permintaan berhasil, pengembalian barang diproses', $response);
             } else {    
-                return ApiFormatter::createApi(400, 'Permintaan tidak valid, data yang diberikan tidak
-                lengkap atau tidak sesuai format');
+                return ApiFormatter::createApi(400, 'Permintaan tidak valid, data yang diberikan tidak lengkap atau tidak sesuai format');
             }
         } catch (Exception $error) {
             return ApiFormatter::createApi(400, $error->getMessage());
         }
     }
+    
 
     /**
      * Display the specified resource.
